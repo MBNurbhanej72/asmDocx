@@ -87,8 +87,7 @@ export default function EmailGenerator() {
         ,
         {
           headers: {
-            // Authorization: `Bearer ${import.meta.env.VITE_MY_API_KEY}`,
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${import.meta.env.VITE_MY_API_KEY}`,
             "Content-Type": "application/json",
             "HTTP-Referer": window.location.origin,
           },
@@ -155,7 +154,7 @@ export default function EmailGenerator() {
       // 2. Generate PDF via React-To-Print
       handlePrint();
 
-    
+
     } catch (error) {
       console.error("Error saving document:", error);
       toast.error("Failed to save document info.");
