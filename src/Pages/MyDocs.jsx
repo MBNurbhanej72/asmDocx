@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import axios from "axios";
+import { PHP_BASE_URL } from "../config/api";
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, orderBy, deleteDoc, doc } from "firebase/firestore";
@@ -27,19 +28,25 @@ const MyDocs = () => {
   const [filter, setFilter] = useState("all");
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [user, setUser] = useState(auth.currentUser);
-  const componentRef = useRef(null);
-
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: selectedDoc ? `${selectedDoc.type}_${selectedDoc.title}` : "Document",
-  });
-
-  const triggerPrint = (doc) => {
+  const triggerPHPPrint = async (doc) => {
     setSelectedDoc(doc);
-    // Use timeout to ensure state update before print
-    setTimeout(() => {
-      handlePrint();
-    }, 100);
+    const endpoint = doc.type === 'email' ? 'email-generator.php' : 'application-generator.php';
+
+    try {
+      const response = await axios.post(`${PHP_BASE_URL}${endpoint}`, doc.formData, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${doc.type}_${Date.now()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("PDF Generation failed:", error);
+      toast.error("Failed to generate PDF via PHP. Make sure your PHP server is running.");
+    }
   };
 
   useEffect(() => {
@@ -236,7 +243,7 @@ const MyDocs = () => {
                 </div>
 
                 <button
-                  onClick={() => triggerPrint(doc)}
+                  onClick={() => triggerPHPPrint(doc)}
                   className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-white/10 py-3 rounded-xl hover:from-purple-500/30 hover:to-cyan-500/30 transition-all group/btn"
                 >
                   <Download className="w-4 h-4 text-purple-400" />
@@ -249,72 +256,7 @@ const MyDocs = () => {
         )}
       </div>
 
-      {/* 📄 Hidden Printable Content for MyDocs */}
-      <div style={{ display: "none" }}>
-        <div ref={componentRef} className="p-10 text-black bg-white font-sans" style={{ width: '210mm' }}>
-          {selectedDoc && (
-            <>
-              {selectedDoc.type === 'application' && (
-                <>
-                  <h1 style={{ textAlign: 'center', color: '#4F46E5', fontSize: '24pt', fontWeight: 'bold', margin: '0 0 10px 0' }}>Application</h1>
-                  <hr style={{ border: '0', borderTop: '1px solid #ccc', margin: '0 0 20px 0' }} />
-                </>
-              )}
 
-              {selectedDoc.type === 'email' ? (
-                // Email Print Layout (Simple format with Heading)
-                <>
-                  <h1 style={{ textAlign: 'center', color: '#4F46E5', fontSize: '24pt', fontWeight: 'bold', margin: '0 0 10px 0' }}>Email</h1>
-                  <hr style={{ border: '0', borderTop: '1px solid #ccc', margin: '0 0 20px 0' }} />
-                  <div style={{ fontSize: '13pt', lineHeight: '1.6', color: '#000' }}>
-                    <p style={{ marginBottom: '8px' }}><strong>From:</strong> {selectedDoc.formData?.from}</p>
-                    <p style={{ marginBottom: '8px' }}><strong>To:</strong> {selectedDoc.formData?.to}</p>
-                    <p style={{ marginBottom: '30px' }}><strong>Subject:</strong> {selectedDoc.formData?.subject}</p>
-
-                    <div style={{ marginTop: '20px' }}>
-                      <p style={{ marginBottom: '16px' }}>{selectedDoc.formData?.greeting}</p>
-                      <div style={{ whiteSpace: 'pre-wrap', marginBottom: '25px' }}>{selectedDoc.formData?.summary}</div>
-                      <p style={{ whiteSpace: 'pre-wrap' }}>{selectedDoc.formData?.closing}</p>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                // Application Print Layout (Reverted to original PHP-like style)
-                <div className="text-gray-900">
-                  <div className="text-right space-y-1 mb-8">
-                    {selectedDoc.formData?.name && <p>{selectedDoc.formData.name}</p>}
-                    {selectedDoc.formData?.classOrPosition && <p>{selectedDoc.formData.classOrPosition}</p>}
-                    {selectedDoc.formData?.organization && <p>{selectedDoc.formData.organization}</p>}
-                    {selectedDoc.formData?.date && <p>{selectedDoc.formData.date}</p>}
-                  </div>
-
-                  <div className="mb-4">
-                    <p><span className="font-bold">To,</span></p>
-                    {selectedDoc.formData?.to && <p>{selectedDoc.formData.to}</p>}
-                    {selectedDoc.formData?.toOrganization && <p>{selectedDoc.formData.toOrganization}</p>}
-                  </div>
-
-                  <div className="mb-4">
-                    <p><span className="font-bold">Subject:</span> {selectedDoc.formData?.subject}</p>
-                  </div>
-
-                  <div className="mt-4 leading-relaxed">
-                    <p className="mb-3">{selectedDoc.formData?.respected}</p>
-                    <div className="whitespace-pre-wrap min-h-[250px]">{selectedDoc.formData?.body}</div>
-                    <div className="mt-8 text-right">
-                      <p className="whitespace-pre-wrap">{selectedDoc.formData?.closing}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div style={{ marginTop: '60px', paddingTop: '10px', borderTop: '1px solid #ccc', textAlign: 'center', color: '#666' }}>
-                <p style={{ fontSize: '12px', fontWeight: 'bold' }}>© 2026 asmDocx</p>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

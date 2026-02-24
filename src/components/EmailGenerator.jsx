@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useReactToPrint } from "react-to-print";
+import { PHP_BASE_URL } from "../config/api";
 import {
   Mail,
   Sparkles,
@@ -116,11 +116,23 @@ export default function EmailGenerator() {
 
 
 
-  const componentRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: `Email_${Date.now()}`,
-  });
+  const handlePHPPrint = async () => {
+    try {
+      const response = await axios.post(`${PHP_BASE_URL}email-generator.php`, form, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Email_${Date.now()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("PDF Generation failed:", error);
+      toast.error("Failed to generate PDF via PHP. Make sure your PHP server is running.");
+    }
+  };
 
   const handleSubmit = async () => {
     const requiredFields = ["from", "to", "subject", "greeting", "summary", "closing"];
@@ -151,8 +163,8 @@ export default function EmailGenerator() {
         createdAt: serverTimestamp(),
       });
 
-      // 2. Generate PDF via React-To-Print
-      handlePrint();
+      // 2. Generate PDF via PHP
+      handlePHPPrint();
 
 
     } catch (error) {
@@ -493,26 +505,7 @@ export default function EmailGenerator() {
         onClose={() => setShowLoginPopup(false)}
       />
 
-      <div style={{ display: "none" }}>
-        <div ref={componentRef} className="p-20 text-black bg-white font-sans" style={{ width: '210mm', minHeight: '297mm' }}>
-          <h1 style={{ textAlign: 'center', color: '#4F46E5', fontSize: '24pt', fontWeight: 'bold', margin: '0 0 10px 0' }}>Email</h1>
-          <hr style={{ border: '0', borderTop: '1px solid #ccc', margin: '0 0 20px 0' }} />
 
-          <div style={{ fontSize: '13pt', lineHeight: '1.6', color: '#000' }}>
-            <p style={{ marginBottom: '8px' }}><strong>From:</strong> {form.from}</p>
-            <p style={{ marginBottom: '8px' }}><strong>To:</strong> {form.to}</p>
-            <p style={{ marginBottom: '30px' }}><strong>Subject:</strong> {form.subject}</p>
-
-            <p style={{ marginTop: '20px', marginBottom: '15px' }}>{form.greeting}</p>
-            <div style={{ whiteSpace: 'pre-wrap', marginBottom: '25px' }}>{form.summary}</div>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{form.closing}</p>
-          </div>
-
-          <div style={{ marginTop: '150px', paddingTop: '10px', borderTop: '1px solid #ccc', textAlign: 'center', color: '#666' }}>
-            <p style={{ fontSize: '12px', fontWeight: 'bold' }}>© 2026 asmDocx</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

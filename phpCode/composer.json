@@ -1,0 +1,11 @@
+{
+    "name": "dell/backend",
+    "autoload": {
+        "psr-4": {
+            "Dell\\Backend\\": "src/"
+        }
+    },
+    "require": {
+        "mpdf/mpdf": "^8.2"
+    }
+}
