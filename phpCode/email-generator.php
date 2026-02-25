@@ -70,7 +70,7 @@ $mpdf = new \Mpdf\Mpdf([
 $mpdf->SetHTMLFooter("
     <hr style='border: 0; border-top: 1px solid #eee;'>
     <div style='text-align: center; font-size: 11px; color: #666; font-family: sans-serif;'>
-        Generated with AI | <a href='https://asmdocx.vercel.app' style='color: #4F46E5; text-decoration: none; font-weight: bold;'>asmDocx</a>
+        Docutnent made by <a href='https://asmdocx.vercel.app' style='color: #4F46E5; text-decoration: none; font-weight: bold;'>asmDocx</a>
     </div>
 ");
 
