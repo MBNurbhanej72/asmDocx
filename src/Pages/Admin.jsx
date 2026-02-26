@@ -542,8 +542,8 @@ export default function Admin({ user, userRole }) {
                 <p className="text-gray-300 text-md font-black">Total Users</p>
               </div>
 
-              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4  bg-purple-500 rounded-full opacity-40"></div>
-              <div className="absolute top-0 left-0 w-36 h-36 translate-x-80 translate-y-4  bg-cyan-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4 bg-purple-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 translate-x-20 translate-y-4 bg-purple-500 md:bg-cyan-500 rounded-full opacity-40 transition-colors duration-500"></div>
             </div>
 
             <div
@@ -559,8 +559,8 @@ export default function Admin({ user, userRole }) {
                 <p className="text-gray-300 text-md font-black">Admin Users</p>
               </div>
 
-              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4  bg-cyan-500 rounded-full opacity-40"></div>
-              <div className="absolute top-0 left-0 w-36 h-36 translate-x-80 translate-y-4  bg-purple-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4 bg-cyan-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 translate-x-20 translate-y-4 bg-cyan-500 md:bg-purple-500 rounded-full opacity-40 transition-colors duration-500"></div>
             </div>
 
             <div
@@ -576,8 +576,8 @@ export default function Admin({ user, userRole }) {
                 <p className="text-gray-300 text-md font-black">Active Users</p>
               </div>
 
-              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4  bg-purple-500 rounded-full opacity-40"></div>
-              <div className="absolute top-0 left-0 w-36 h-36 translate-x-80 translate-y-4  bg-cyan-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4 bg-purple-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 translate-x-20 translate-y-4 bg-purple-500 md:bg-cyan-500 rounded-full opacity-40 transition-colors duration-500"></div>
             </div>
 
             {/* Total Contacts Card */}
@@ -594,8 +594,8 @@ export default function Admin({ user, userRole }) {
                 <p className="text-gray-300 text-md font-black">Total Contacts</p>
               </div>
 
-              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4  bg-pink-500 rounded-full opacity-40"></div>
-              <div className="absolute top-0 left-0 w-36 h-36 translate-x-80 translate-y-4  bg-orange-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 left-0 w-36 h-36 -translate-x-20 translate-y-4 bg-cyan-500 rounded-full opacity-40"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 translate-x-20 translate-y-4 bg-cyan-500 md:bg-purple-500 rounded-full opacity-40 transition-colors duration-500"></div>
             </div>
           </div>
 
